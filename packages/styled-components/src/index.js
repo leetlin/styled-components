@@ -62,7 +62,7 @@ const withCss = styled => {
 
 const withTemplateFunc = styled => (...props) => withCss(styled(...props))
 
-const styled = (styled => {
+const styledPx2vw = (styled => {
   const obj = withTemplateFunc(styled)
 
   Object.keys(styled).forEach(key => {
@@ -76,6 +76,6 @@ const styled = (styled => {
   return obj
 })(baseStyled)
 
-export default styled
+export default styledPx2vw
 export { px2vw }
 export * from './styled'
