@@ -78,4 +78,4 @@ const styled = (_styled => {
 
 export default styled
 export { px2vw }
-export * from 'styled-components'
+export * from './styled'
