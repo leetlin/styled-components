@@ -1,3 +1,4 @@
+/* eslint-disable */
 import baseStyled from './styled'
 
 const pxRe = /-?\d*[.\d]*px/g
@@ -6,9 +7,8 @@ const base64Re = /^data:\w+\/[a-zA-Z+\-.]+;base64,/i
 const px2vw = px =>
   Number(px) ? `${Math.round((Number(px) / 3.75) * 100000) / 100000}vw` : 0
 
-const convertStringPx2vw = _style => {
-  if (!_style) return _style
-  const style = _style;
+const convertStringPx2vw = style => {
+  if (!style) return style
 
   if (
     Object.prototype.toString.call(style) === '[object Object]' &&
@@ -44,32 +44,32 @@ const convertInterpolationPx2vw = interpolation => {
   }
 }
 
-// eslint-disable-next-line
-const withTemplateFunc = _styled => (...props) => withCss(_styled(...props))
-
-const withCss = _styled => {
+const withCss = styled => {
   const interleave = (strings, ...interpolations) => {
-    const _strings = strings.map(convertStringPx2vw)
-    const _interpolations = interpolations.map(convertInterpolationPx2vw)
+    strings = strings.map(convertStringPx2vw)
 
-    return _styled(_strings, ..._interpolations)
+    interpolations = interpolations.map(convertInterpolationPx2vw)
+
+    return styled(strings, ...interpolations)
   }
 
-  Object.keys(_styled).forEach(
-    prop => (interleave[prop] = withTemplateFunc(_styled[prop])),
+  Object.keys(styled).forEach(
+    prop => (interleave[prop] = withTemplateFunc(styled[prop])),
   )
 
   return interleave
 }
 
-const styled = (_styled => {
-  const obj = withTemplateFunc(_styled)
+const withTemplateFunc = styled => (...props) => withCss(styled(...props))
 
-  Object.keys(_styled).forEach(key => {
-    obj[key] = withCss(_styled[key])
+const styled = (styled => {
+  const obj = withTemplateFunc(styled)
 
-    Object.keys(_styled[key]).forEach(
-      prop => (obj[key][prop] = withTemplateFunc(_styled[key][prop])),
+  Object.keys(styled).forEach(key => {
+    obj[key] = withCss(styled[key])
+
+    Object.keys(styled[key]).forEach(
+      prop => (obj[key][prop] = withTemplateFunc(styled[key][prop])),
     )
   })
 
